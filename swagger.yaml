@@ -1,0 +1,180 @@
+---
+openapi: 3.0.0
+info:
+  title: VoicePopcorn
+  description: VoicePopcorn API
+  contact:
+    email: support@voicepopcorn.com
+  version: 1.0.0
+servers:
+  - url: https://api.voicepopcorn.com
+security:
+  - X-Api-Key: []
+tags:
+  - name: Orders
+    description: Manage Orders
+paths:
+  /api/v1/order/:
+    get:
+      tags:
+        - Orders
+      summary: List your orders
+      description: |
+        List all of your orders.
+      operationId: listOrders
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200"
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseError"
+    post:
+      tags:
+        - Orders
+      summary: Creates a new order
+      description: Creates a new order
+      operationId: createOrder
+      requestBody:
+        description: Order to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderItemRequest"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200_1"
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseError"
+  /api/v1/order/{id}/:
+    get:
+      tags:
+        - Orders
+      summary: Get your order
+      description: |
+        Add your Order's ID to the URL path and get the order details.
+      operationId: getOrder
+      parameters:
+        - name: id
+          in: path
+          description: Numeric ID of the user to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200_1"
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseError"
+components:
+  schemas:
+    OrderItemRequest:
+      required:
+        - text
+      type: object
+      properties:
+        text:
+          type: string
+          example: Text or a url to an article.
+    OrderItemResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1234
+        text:
+          type: string
+          example: Text or a url to an article.
+        audio_file:
+          type: string
+        title:
+          type: string
+          example: My Recording
+        description:
+          type: string
+          example: ""
+        is_complete:
+          type: boolean
+          example: true
+        is_delivered:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          example: 2022-01-06T03:57:52.966770Z
+        delivered_at:
+          type: string
+          example: 2022-01-06T03:57:52.966770Z
+        status:
+          type: string
+          example: in_progress
+          enum:
+            - in_progress
+            - complete
+            - error
+            - rejected
+        account:
+          type: integer
+          example: 1234234
+    ResponseError:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
+    inline_response_200:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        code:
+          type: integer
+          example: 200
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItemResponse"
+        message:
+          type: string
+    inline_response_200_1:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        code:
+          type: integer
+          example: 200
+        data:
+          $ref: "#/components/schemas/OrderItemResponse"
+        message:
+          type: string
+  securitySchemes:
+    X-Api-Key:
+      type: apiKey
+      name: X-Api-Key
+      in: header
