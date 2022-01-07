@@ -97,7 +97,7 @@ paths:
           schema:
             type: string
           required: true
-          description: Numeric ID of the user to get
+          description: ID of the order to get
       responses:
         '200':
           description: ''
